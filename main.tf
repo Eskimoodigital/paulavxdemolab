@@ -15,34 +15,21 @@ module "transit_adoption_framework" {
 
   peering_mode = "custom"
   peering_map = {
-    aws_peering : {
-      gw1_name = module.transit_adoption_framework.transit["azure_transit_firenet"].transit_gateway.gw_name,
-      gw2_name = module.transit_adoption_framework.transit["gcp_transit_firenet"].transit_gateway.gw_name,
-    },
     azure_peering : {
-      gw1_name = module.transit_adoption_framework.transit["aws_transit_firenet"].transit_gateway.gw_name,
-      gw2_name = module.transit_adoption_framework.transit["gcp_transit_firenet"].transit_gateway.gw_name,
+      gw1_name = module.transit_adoption_framework.transit["gcp_transit_firenet"].transit_gateway.gw_name,
     },
     gcp_peering : {
       gw1_name = module.transit_adoption_framework.transit["azure_transit_firenet"].transit_gateway.gw_name,
-      gw2_name = module.transit_adoption_framework.transit["aws_transit_firenet"].transit_gateway.gw_name,
     },
   }
 
   transit_firenet = {
-    aws_transit_firenet = {
-      transit_cloud       = "aws",
-      transit_cidr        = "10.103.0.0/16",
-      transit_region_name = var.aws_region,
-      transit_asn         = 64514,
-      firenet             = true
-    },
     azure_transit_firenet = {
       transit_cloud       = "azure",
       transit_cidr        = "10.101.0.0/16",
       transit_region_name = var.azure_region,
       transit_asn         = 64512,
-      firenet             = true
+      firenet             = false
       firenet_user_data_1 = local.azure_fw1
       firenet_user_data_2 = local.azure_fw2
     },
@@ -54,7 +41,7 @@ module "transit_adoption_framework" {
       transit_asn         = 64513,
       firenet_egress_cidr = "10.102.32.0/20",
       firenet_mgmt_cidr = "10.102.48.0/20",
-      firenet             = true
+      firenet             = false
     #   firenet_user_data_1 = local.gcp_fw1 #This bootstrapping method does not work in the exact same way as in Azure/AWS. Need to look into it.
     #   firenet_user_data_2 = local.gcp_fw2 #This bootstrapping method does not work in the exact same way as in Azure/AWS. Need to look into it.
     },
